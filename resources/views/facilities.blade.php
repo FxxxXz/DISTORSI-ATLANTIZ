@@ -518,17 +518,20 @@
                         @endauth
 
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Nama Lengkap</label>
-                                <input type="text" class="form-control" id="nama" value="{{ auth()->user()->name ?? '' }}" {{ auth()->check() ? 'readonly' : '' }} required>
-                            </div>
+                            {{-- NAMA LENGKAP --}}
+                             <div class="col-md-6">
+        <label class="form-label">Nama Lengkap</label>  {{-- WAJIB ADA --}}
+        <input type="text" class="form-control" id="nama" 
+               value="{{ auth()->user()->name ?? '' }}" 
+               required>  {{-- HAPUS readonly kalau mau bisa edit --}}
+    </div>
                             <div class="col-md-6">
                                 <label class="form-label">Nomor Telepon</label>
-                                <input type="tel" class="form-control" id="telepon" required>
+                                <input type="tel" class="form-control" id="telepon" pattern="[0-9]*" inputmode="numeric" placeholder="Contoh: 081234567890" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" value="{{ auth()->user()->email ?? '' }}" {{ auth()->check() ? 'readonly' : '' }} required>
+                                <input type="email" class="form-control" id="email" value="{{ auth()->user()->email ?? '' }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Pilih Studio</label>
@@ -540,18 +543,43 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Tanggal Booking</label>
-                                <input type="date" class="form-control" id="tanggal" required min="{{ date('Y-m-d') }}">
-                            </div>
+    <label class="form-label">Tanggal Booking</label>
+    <div class="d-flex gap-2">
+        {{-- Tanggal --}}
+        <select class="form-select" id="tanggalHari" required style="flex: 1;">
+            <option value="" selected disabled>Tanggal</option>
+            @for($i = 1; $i <= 31; $i++)
+                <option value="{{ sprintf('%02d', $i) }}">{{ $i }}</option>
+            @endfor
+        </select>
+        
+        {{-- Bulan --}}
+        <select class="form-select" id="bulan" required style="flex: 2;">
+            <option value="" selected disabled>Bulan</option>
+            @for($i = 1; $i <= 12; $i++)
+                <option value="{{ sprintf('%02d', $i) }}" {{ $i == date('n') ? 'selected' : '' }}>
+                    {{ \Carbon\Carbon::create(2026, $i, 1)->translatedFormat('F') }}
+                </option>
+            @endfor
+        </select>
+        
+        {{-- Tahun (Tetap 2026, readonly) --}}
+        <input type="text" class="form-control" value="2026" readonly style="flex: 1; text-align: center; cursor: default; opacity: 0.7;">
+    </div>
+</div>
+
+                            {{-- Input hidden untuk kirim ke server --}}
+                            <input type="hidden" id="tanggal" name="tanggal" value="">
+
                             <div class="col-md-6">
-                                <label class="form-label">Jam Mulai</label>
-                                <select class="form-select" id="jamMulai" required>
-                                    <option value="" selected disabled>Pilih Jam</option>
-                                    @for($i = 9; $i <= 22; $i++)
-                                        <option value="{{ sprintf('%02d:00', $i) }}">{{ sprintf('%02d:00', $i) }}</option>
-                                    @endfor
-                                </select>
-                            </div>
+    <label class="form-label">Jam Mulai</label>
+    <select class="form-select" id="jamMulai" required>
+        <option value="" selected disabled>Pilih Jam</option>
+        @for($jam = 8; $jam <= 22; $jam++)
+            <option value="{{ sprintf('%02d:00', $jam) }}">{{ sprintf('%02d:00', $jam) }} WIB</option>
+        @endfor
+    </select>
+</div>
                             <div class="col-md-6">
                                 <label class="form-label">Durasi (jam)</label>
                                 <select class="form-select" id="durasi" required>
@@ -609,6 +637,67 @@ window.addEventListener("load", () => {
 
   reveals.forEach(el => observer.observe(el));
 });
+
+/* ================= TANGGAL COMBINER ================= */
+const bulanSelect = document.getElementById("bulan");
+const tanggalHariSelect = document.getElementById("tanggalHari");
+const tanggalHidden = document.getElementById("tanggal");
+
+function updateTanggal() {
+    const bulan = bulanSelect ? bulanSelect.value : '';
+    const hari = tanggalHariSelect ? tanggalHariSelect.value : '';
+    
+    if (bulan && hari) {
+        const date = new Date(2026, parseInt(bulan) - 1, parseInt(hari));
+        if (date.getMonth() + 1 === parseInt(bulan) && parseInt(hari) >= 1) {
+            tanggalHidden.value = `2026-${bulan}-${hari}`;
+            tanggalHariSelect.classList.remove('is-invalid');
+        } else {
+            tanggalHidden.value = '';
+            tanggalHariSelect.classList.add('is-invalid');
+            console.warn('Tanggal tidak valid untuk bulan tersebut');
+        }
+    } else {
+        tanggalHidden.value = '';
+    }
+}
+
+if (bulanSelect) bulanSelect.addEventListener("change", updateTanggal);
+if (tanggalHariSelect) tanggalHariSelect.addEventListener("change", updateTanggal);
+
+/* ================= NOMOR TELEPON HANYA ANGKA ================= */
+const teleponInput = document.getElementById("telepon");
+
+if (teleponInput) {
+    // Hanya izinkan angka saat mengetik
+    teleponInput.addEventListener("input", function(e) {
+        // Hapus semua karakter non-angka
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Cegah paste karakter non-angka
+    teleponInput.addEventListener("paste", function(e) {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData).getData("text");
+        const cleaned = pasted.replace(/[^0-9]/g, '');
+        this.value = cleaned;
+    });
+
+    // Cegah tombol selain angka & navigasi
+    teleponInput.addEventListener("keydown", function(e) {
+        // Izinkan: backspace, delete, tab, escape, enter, arrow keys
+        const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+        if (allowedKeys.includes(e.key)) return;
+
+        // Izinkan: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        if ((e.ctrlKey || e.metaKey) && ['a','c','v','x'].includes(e.key.toLowerCase())) return;
+
+        // Cegal jika bukan angka
+        if (!/^[0-9]$/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+}
 
 /* ================= PRICE CALCULATION ================= */
 const studioSelect = document.getElementById("studioType");
