@@ -3,58 +3,50 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    /**
-     * Show the login form.
-     *
-     * @return \Illuminate\View\View
-     */
     public function show()
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle an authentication attempt.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+public function store(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
 
-        if (Auth::attempt($credentials, $request->remember)) {
-            $request->session()->regenerate();
+    $user = User::where('email', $credentials['email'])->first();
 
-            // ================= PERBAIKAN DI SINI =================
-            // Cek role user setelah login berhasil
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin');
-            }
-
-            // Jika bukan admin, redirect ke dashboard user
-            return redirect()->intended('/dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+    if (!$user) {
+        return back()->withErrors(['email' => 'Akun tidak ditemukan.']);
     }
 
-    /**
-     * Log the user out.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    if ($user->is_active == 0) {
+        return back()->withErrors(['email' => 'Akun dinonaktifkan.']);
+    }
+
+    // Coba login dengan remember
+    if (Auth::attempt($credentials, $request->boolean('remember', false))) {
+        $request->session()->regenerate();
+        
+        // PASTIKAN USER TERSIMPAN
+        // dd(auth()->user()); // Uncomment untuk debug
+
+        if (auth()->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('dashboard');
+    }
+
+    return back()->withErrors(['email' => 'Email atau password salah.']);
+}
+
     public function logout(Request $request)
     {
         Auth::logout();

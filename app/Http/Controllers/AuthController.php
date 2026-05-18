@@ -13,21 +13,38 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
+        if (Auth::check()) {
+            return auth()->user()->isAdmin() 
+                ? redirect()->route('admin.dashboard') 
+                : redirect()->route('home');
+        }
+
         return view('auth.login');
     }
 
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        // Cek user aktif
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if ($user && !$user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda dinonaktifkan. Hubungi admin.',
+            ]);
+        }
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             
             return redirect()->intended(
-                auth()->user()->isAdmin() ? route('admin.dashboard') : route('home')
+                auth()->user()->isAdmin() 
+                    ? route('admin.dashboard') 
+                    : route('home')
             );
         }
 
@@ -38,6 +55,10 @@ class AuthController extends Controller
 
     public function showRegister()
     {
+        if (Auth::check()) {
+            return redirect()->route('home');
+        }
+
         return view('auth.register');
     }
 
@@ -47,7 +68,7 @@ class AuthController extends Controller
             'nama_lengkap' => 'required|string|min:3|max:255',
             'username' => 'required|string|min:5|max:255|unique:users|regex:/^[a-zA-Z0-9_]+$/',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
@@ -56,11 +77,12 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'user',
+            'is_active' => true,
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success', 'Registrasi berhasil!');
     }
 
     public function logout(Request $request)
@@ -68,6 +90,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('home');
+        
+        return redirect()->route('home')->with('success', 'Berhasil logout.');
     }
 }

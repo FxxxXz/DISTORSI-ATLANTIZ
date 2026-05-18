@@ -18,9 +18,16 @@
             --darker: #0f0f0f;
         }
         
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Montserrat', sans-serif;
             background: #f5f5f5;
+            overflow-x: hidden;
         }
         
         .admin-sidebar {
@@ -49,6 +56,10 @@
             padding: 12px 20px;
             border-radius: 0;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
         }
         
         .nav-link:hover, .nav-link.active {
@@ -59,10 +70,12 @@
         
         .nav-link i {
             width: 24px;
+            font-size: 1.1rem;
         }
         
         .admin-main {
             margin-left: var(--sidebar-width);
+            min-height: 100vh;
             padding: 20px;
         }
         
@@ -72,6 +85,9 @@
             border-radius: 10px;
             margin-bottom: 25px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .stat-card {
@@ -118,33 +134,25 @@
             <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings') ? 'active' : '' }}">
                 <i class="bi bi-calendar-check"></i> Booking
-                @php($pendingCount = \App\Models\Booking::pending()->count())
-                @if($pendingCount > 0)
-                    <span class="badge bg-danger ms-auto">{{ $pendingCount }}</span>
-                @endif
             </a>
-            <a href="{{ route('admin.studios.index') }}" class="nav-link {{ request()->routeIs('admin.studios.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.studios') }}" class="nav-link {{ request()->routeIs('admin.studios') ? 'active' : '' }}">
                 <i class="bi bi-music-note-beamed"></i> Studio
             </a>
-            <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.users') }}" class="nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                 <i class="bi bi-people"></i> Users
             </a>
-            <a href="{{ route('admin.messages.index') }}" class="nav-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.kontaks') }}" class="nav-link {{ request()->routeIs('admin.kontaks') ? 'active' : '' }}">
                 <i class="bi bi-envelope"></i> Pesan
-                @php($unreadCount = \App\Models\Kontak::where('status', 'unread')->count())
-                @if($unreadCount > 0)
-                    <span class="badge bg-danger ms-auto">{{ $unreadCount }}</span>
-                @endif
             </a>
             
-            <hr class="border-secondary my-3">
+            <hr class="border-secondary my-3 mx-3">
             
             <a href="{{ route('home') }}" class="nav-link" target="_blank">
                 <i class="bi bi-box-arrow-up-right"></i> Lihat Website
             </a>
-            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+            <form action="{{ route('logout') }}" method="POST" class="m-0">
                 @csrf
                 <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
                     <i class="bi bi-box-arrow-left"></i> Logout
@@ -155,7 +163,7 @@
 
     {{-- MAIN CONTENT --}}
     <main class="admin-main">
-        <div class="admin-header d-flex justify-content-between align-items-center">
+        <div class="admin-header">
             <h5 class="mb-0">@yield('page-title', 'Dashboard')</h5>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-muted">{{ auth()->user()->nama_lengkap }}</span>
@@ -166,6 +174,12 @@
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show">
                 {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show">
+                {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif

@@ -8,7 +8,7 @@
 }
 
 body {
-    font-family: 'Montserrat', 'Poppins', 'Segoe UI', sans-serif;
+    font-family: "Montserrat", "Poppins", "Segoe UI", sans-serif;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -19,14 +19,14 @@ body {
 /* ================= BACKGROUND FOTO SENDIRI ================= */
 /* LAYER 1: FOTO BACKGROUND */
 body::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     /* GANTI 'nama-foto-anda.jpg' dengan nama file foto Anda */
-    background-image: url('../img/background-studio.jpg');
+    background-image: url("../img/background-studio.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -37,13 +37,17 @@ body::before {
 
 /* LAYER 2: OVERLAY GRADASI GELAP (AGAR TEKS MUDAH DIBACA) */
 body::after {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(30, 0, 0, 0.6) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.75) 0%,
+        rgba(30, 0, 0, 0.6) 100%
+    );
     z-index: -1;
 }
 
@@ -121,7 +125,7 @@ body::after {
     background: rgba(26, 26, 26, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 14px;
-    color: #ffffff;
+    color: #ffffff !important;
     font-size: 0.95rem;
     transition: all 0.3s ease;
 }
@@ -131,10 +135,20 @@ body::after {
     border-color: #ff4d4d;
     box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
     background: #1a1a1a;
+    color: #ffffff !important;
 }
 
 .form-control::placeholder {
     color: #888888;
+}
+
+/* Fix autofill browser */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* PASSWORD WRAPPER */
@@ -325,3 +339,82 @@ header nav,
 footer {
     display: none !important;
 }
+
+/* Fix warna teks Remember Me */
+.form-check-label {
+    color: #dddddd !important;
+}
+
+/* Fix warna Forgot Password */
+.forgot-password a {
+    color: #ff4d4d !important;
+}
+
+/* Fix link Registrasi */
+.register-text a {
+    color: #ff4d4d;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-text a:hover {
+    text-decoration: underline;
+    color: #ff6666;
+}
+
+/* Matikan centang hijau Bootstrap */
+.was-validated .form-control:valid,
+.form-control.is-valid {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    background-image: none !important;
+}
+
+.was-validated .form-control:valid:focus,
+.form-control.is-valid:focus {
+    border-color: #ff4d4d !important;
+    box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2) !important;
+}
+
+/* Matikan icon centang */
+.form-control.is-valid,
+.was-validated .form-control:valid {
+    background-image: none !important;
+    padding-right: 18px !important;
+}
+
+/* ============================================
+   ALTERNATIF 3: Minimalis pure white outline
+   ============================================ */
+
+.btn-nav-login,
+.btn-nav-register {
+    padding: 8px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-nav-login:hover,
+.btn-nav-register:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+
+/* Register sedikit lebih terang */
+.btn-nav-register {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-nav-register:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+

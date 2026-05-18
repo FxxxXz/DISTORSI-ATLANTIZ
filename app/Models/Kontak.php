@@ -31,4 +31,25 @@ class Kontak extends Model
     {
         return $this->belongsTo(User::class, 'dibaca_oleh');
     }
+
+    public function getStatusBadgeAttribute(): string
+    {
+        return match($this->status) {
+            'unread' => '<span class="badge bg-danger">Belum Dibaca</span>',
+            'read' => '<span class="badge bg-warning">Sudah Dibaca</span>',
+            'replied' => '<span class="badge bg-success">Dibalas</span>',
+            default => '<span class="badge bg-secondary">Unknown</span>',
+        };
+    }
+
+    public function markAsRead(): void
+    {
+        if (!$this->dibaca_pada) {
+            $this->update([
+                'status' => 'read',
+                'dibaca_pada' => now(),
+                'dibaca_oleh' => auth()->id(),
+            ]);
+        }
+    }
 }

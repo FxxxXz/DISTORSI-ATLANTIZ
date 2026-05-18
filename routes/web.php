@@ -1,100 +1,75 @@
 <?php
+// routes/web.php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\StudioController;
+use App\Http\Controllers\Admin\BookingController as AdminBookingController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\KontakController;
 
 // ================= GUEST / PUBLIC ROUTES =================
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', fn() => view('home'))->name('home');
+Route::get('/tentang-studio', fn() => view('about'))->name('about');
+Route::get('/fasilitas-booking', fn() => view('facilities'))->name('facilities');
+Route::get('/kontak', fn() => view('contact'))->name('contact');
 
-Route::get('/tentang-studio', function () {
-    return view('about');
-})->name('about');
+// ================= AUTH ROUTES (HANYA UNTUK GUEST) =================
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
 
-Route::get('/fasilitas-booking', function () {
-    return view('facilities');
-})->name('facilities');
+// Logout (hanya untuk yang sudah login)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::get('/kontak', function () {
-    return view('contact');
-})->name('contact');
-
-// ================= AUTH ROUTES (Login, Register, Forgot Password) =================
-Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::post('/login', [LoginController::class, 'store']);
-
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-
-Route::get('/lupa-password', function () {
-    return view('auth.forgot-password');
-})->name('password.request');
-
-Route::get('/reset-password', function () {
-    return view('auth.reset-password');
-})->name('password.reset');
-
-// ================= LOGOUT =================
-Route::post('/logout', function () {
-    auth()->logout();
-    return redirect('/');
-})->name('logout');
-
-// ================= PROTECTED ROUTES (Harus Login) =================
+// ================= PROTECTED ROUTES =================
 Route::middleware('auth')->group(function () {
-    // Booking Routes
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-
-    // Dashboard User (dengan pengecekan role)
+    
     Route::get('/dashboard', function () {
-        // Jika admin mengakses dashboard user, redirect ke admin dashboard
-        if (auth()->user()->role === 'admin') {
+        if (auth()->user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
         }
         return view('dashboard');
     })->name('dashboard');
 });
 
-// ================= ADMIN ROUTES (Harus Login & Role Admin) =================
+// ================= ADMIN ROUTES =================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Studios
+    Route::get('studios', [StudioController::class, 'index'])->name('studios');
+    Route::get('studios/create', [StudioController::class, 'create'])->name('studios.create');
+    Route::post('studios', [StudioController::class, 'store'])->name('studios.store');
+    Route::get('studios/{studio}/edit', [StudioController::class, 'edit'])->name('studios.edit');
+    Route::put('studios/{studio}', [StudioController::class, 'update'])->name('studios.update');
+    Route::delete('studios/{studio}', [StudioController::class, 'destroy'])->name('studios.destroy');
 
-    // Studio Management
-    Route::get('/studios', [App\Http\Controllers\Admin\StudioController::class, 'index'])->name('studios');
-    Route::post('/studios', [App\Http\Controllers\Admin\StudioController::class, 'store'])->name('studios.store');
-    Route::get('/studios/{id}/edit', [App\Http\Controllers\Admin\StudioController::class, 'edit'])->name('studios.edit');
-    Route::put('/studios/{id}', [App\Http\Controllers\Admin\StudioController::class, 'update'])->name('studios.update');
-    Route::delete('/studios/{id}', [App\Http\Controllers\Admin\StudioController::class, 'destroy'])->name('studios.destroy');
+    // Bookings
+    Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings');
+    Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
+    Route::put('bookings/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('bookings.confirm');
+    Route::put('bookings/{booking}/cancel', [AdminBookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::put('bookings/{booking}/complete', [AdminBookingController::class, 'complete'])->name('bookings.complete');
 
-    // Booking Management
-    Route::get('/bookings', [App\Http\Controllers\Admin\BookingController::class, 'index'])->name('bookings');
-    Route::get('/bookings/{id}', [App\Http\Controllers\Admin\BookingController::class, 'show'])->name('bookings.show');
-    Route::put('/bookings/{id}/status', [App\Http\Controllers\Admin\BookingController::class, 'updateStatus'])->name('bookings.status');
-    Route::delete('/bookings/{id}', [App\Http\Controllers\Admin\BookingController::class, 'destroy'])->name('bookings.destroy');
+    // Users
+    Route::get('users', [UserController::class, 'index'])->name('users');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-    // User Management
-    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
-    Route::post('/users', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{id}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+    // Kontaks
+    Route::get('kontaks', [KontakController::class, 'index'])->name('kontaks');
+    Route::get('kontaks/{id}', [KontakController::class, 'show'])->name('kontaks.show');
+    Route::delete('kontaks/{id}', [KontakController::class, 'destroy'])->name('kontaks.destroy');
 });
 
-// ================= REDIRECT KHUSUS (Opsional) =================
-// Jika user biasa mengakses /admin, redirect ke dashboard user
-Route::get('/admin', function () {
-    if (auth()->check() && auth()->user()->role === 'admin') {
-        return redirect()->route('admin.dashboard');
-    }
-    return redirect()->route('dashboard');
-})->middleware('auth');
-
-// ================= FALLBACK ROUTE (404) =================
-Route::fallback(function () {
-    return view('errors.404');
-});
+Route::fallback(fn() => view('errors.404'));

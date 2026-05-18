@@ -1,5 +1,4 @@
 <?php
-// app/Models/User.php
 
 namespace App\Models;
 
@@ -20,6 +19,7 @@ class User extends Authenticatable
         'no_telepon',
         'alamat',
         'foto_profile',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -32,6 +32,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -46,6 +47,11 @@ class User extends Authenticatable
         return $query->where('role', 'user');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     // Checks
     public function isAdmin(): bool
     {
@@ -55,6 +61,11 @@ class User extends Authenticatable
     public function isUser(): bool
     {
         return $this->role === 'user';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->is_active === true || $this->is_active === 1;
     }
 
     // Relations

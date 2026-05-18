@@ -1,17 +1,15 @@
-{{-- ================= NAVBAR ================= --}}
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
+{{-- resources/views/partials/navbar.blade.php --}}
+<<nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
     <div class="container-fluid d-flex align-items-center px-4 position-relative">
-        {{-- LOGO --}}
+        
         <a class="navbar-brand" href="{{ route('home') }}">
             <img src="{{ asset('img/logo.png') }}" class="logo-top" alt="Logo">
         </a>
         
-        {{-- Mobile Toggle --}}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         
-        {{-- CENTER MENU --}}
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="nav-center mx-auto">
                 <ul class="navbar-nav gap-4">
@@ -31,7 +29,31 @@
             </div>
             
             {{-- USER AREA --}}
-            <div id="userArea" class="ms-auto"></div>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                @auth
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                            {{ auth()->user()->nama_lengkap }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
+                            @if(auth()->user()->isAdmin())
+                                <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin Panel</a></li>
+                            @endif
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm">Login</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Register</a>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>

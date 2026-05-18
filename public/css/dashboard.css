@@ -28,8 +28,12 @@
 }
 
 @keyframes slowZoom {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.12); }
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.12);
+    }
 }
 
 /* Global Font */
@@ -65,7 +69,9 @@ body {
 .hero-title {
     font-weight: 700;
     letter-spacing: 1px;
-    text-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.3);
+    text-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.45),
+        0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* ================= NAVBAR GLOBAL ================= */
@@ -222,17 +228,39 @@ body {
 }
 
 @keyframes grainMove {
-    0% { transform: translate(0,0); }
-    10% { transform: translate(-5%,-10%); }
-    20% { transform: translate(-15%,5%); }
-    30% { transform: translate(7%,-25%); }
-    40% { transform: translate(-5%,25%); }
-    50% { transform: translate(-15%,10%); }
-    60% { transform: translate(15%,0%); }
-    70% { transform: translate(0%,15%); }
-    80% { transform: translate(3%,35%); }
-    90% { transform: translate(-10%,10%); }
-    100% { transform: translate(0,0); }
+    0% {
+        transform: translate(0, 0);
+    }
+    10% {
+        transform: translate(-5%, -10%);
+    }
+    20% {
+        transform: translate(-15%, 5%);
+    }
+    30% {
+        transform: translate(7%, -25%);
+    }
+    40% {
+        transform: translate(-5%, 25%);
+    }
+    50% {
+        transform: translate(-15%, 10%);
+    }
+    60% {
+        transform: translate(15%, 0%);
+    }
+    70% {
+        transform: translate(0%, 15%);
+    }
+    80% {
+        transform: translate(3%, 35%);
+    }
+    90% {
+        transform: translate(-10%, 10%);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
 }
 
 /* ================= RESPONSIVE ================= */
@@ -315,4 +343,147 @@ body {
     .user-profile span {
         display: none;
     }
+}
+
+/* Tambahkan ke css/dashboard.css atau css/style.css */
+
+.dashboard-container {
+    padding: 120px 20px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 80vh;
+}
+
+.dashboard-welcome {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.dashboard-welcome h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.dashboard-welcome p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: #ff4757;
+    margin-bottom: 15px;
+}
+
+.dashboard-card h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.dashboard-card p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.btn-card {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #ff4757;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-card:hover {
+    background: #ff6b81;
+    color: #fff;
+}
+
+.admin-notice {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #ffc107;
+}
+
+.admin-notice i {
+    font-size: 1.2rem;
+}
+
+.admin-notice a {
+    color: #ffc107;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* Navbar User Dropdown */
+.nav-user-dropdown {
+    position: relative;
+}
+
+.nav-user-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-user-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    color: #ff4757;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    color: #ff6b81;
 }
