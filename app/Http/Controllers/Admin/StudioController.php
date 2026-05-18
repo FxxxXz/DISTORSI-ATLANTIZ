@@ -50,7 +50,7 @@ class StudioController extends Controller
 
         Studio::create($validated);
 
-        return redirect()->route('admin.studios.index')->with('success', 'Studio berhasil ditambahkan!');
+        return redirect()->route('admin.studios')->with('success', 'Studio berhasil ditambahkan!');
     }
 
     public function edit(Studio $studio)
@@ -83,7 +83,6 @@ class StudioController extends Controller
         $validated['is_best_value'] = $request->boolean('is_best_value', false);
 
         if ($request->hasFile('foto')) {
-            // Hapus foto lama
             if ($studio->foto) {
                 Storage::disk('public')->delete($studio->foto);
             }
@@ -92,18 +91,17 @@ class StudioController extends Controller
 
         $studio->update($validated);
 
-        return redirect()->route('admin.studios.index')->with('success', 'Studio berhasil diupdate.');
+        return redirect()->route('admin.studios')->with('success', 'Studio berhasil diupdate.');
     }
 
     public function destroy(Studio $studio)
     {
-        // Hapus foto
         if ($studio->foto) {
             Storage::disk('public')->delete($studio->foto);
         }
         
         $studio->delete();
-        return redirect()->route('admin.studios.index')->with('success', 'Studio berhasil dihapus.');
+        return redirect()->route('admin.studios')->with('success', 'Studio berhasil dihapus.');
     }
 
     private function generateUniqueSlug(string $nama, ?int $excludeId = null): string

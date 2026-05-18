@@ -1,11 +1,10 @@
 <?php
-// app/Models/Booking.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Booking extends Model
 {
@@ -32,63 +31,61 @@ class Booking extends Model
         'dibatalkan_pada' => 'datetime',
     ];
 
-    // Scopes
-    public function scopePending(Builder $query): Builder
+    // ========== SCOPES ==========
+    public function scopePending($query)
     {
         return $query->where('status', 'pending');
     }
 
-    public function scopeConfirmed(Builder $query): Builder
-    {
-        return $query->where('status', 'confirmed');
-    }
-
-    public function scopeToday(Builder $query): Builder
+    public function scopeToday($query)
     {
         return $query->whereDate('tanggal', today());
     }
 
-    public function scopeUpcoming(Builder $query): Builder
+    public function scopeConfirmed($query)
     {
-        return $query->whereDate('tanggal', '>=', today());
+        return $query->where('status', 'confirmed');
     }
 
-    // Relations
-    public function user()
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    public function scopeCancelled($query)
+    {
+        return $query->where('status', 'cancelled');
+    }
+
+    // ========== RELATIONS ==========
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function studio()
+    public function studio(): BelongsTo
     {
         return $this->belongsTo(Studio::class);
     }
 
-    // Accessors
-    public function getStatusBadgeAttribute(): string
+    // ========== HELPERS ==========
+    public function isPending(): bool
     {
-        return match($this->status) {
-            'pending' => '<span class="badge bg-warning">Pending</span>',
-            'confirmed' => '<span class="badge bg-success">Confirmed</span>',
-            'completed' => '<span class="badge bg-info">Completed</span>',
-            'cancelled' => '<span class="badge bg-danger">Cancelled</span>',
-            default => '<span class="badge bg-secondary">Unknown</span>',
-        };
+        return $this->status === 'pending';
     }
 
-    public function getFormattedTotalHargaAttribute(): string
+    public function isConfirmed(): bool
     {
-        return 'Rp ' . number_format($this->total_harga, 0, ',', '.');
-    }
-    
-        // Relasi ke Payment
-    public function payment()
-    {
-        return $this->hasOne(Payment::class);
+        return $this->status === 'confirmed';
     }
 
-    public function isPaid(): bool
+    public function isCompleted(): bool
     {
-        return $this->payment && $this->payment->status === 'paid';
+        return $this->status === 'completed';
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
     }
 }

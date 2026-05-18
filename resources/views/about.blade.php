@@ -1,10 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Tentang Studio - Distorsi Atlantiz')
+@section('title', 'ABOUT - Distorsi Atlantiz')
 
 @push('styles')
 <link href="{{ asset('css/about.css') }}" rel="stylesheet">
 @endpush
+
+<link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
+<link rel="shortcut icon" type="image/png" href="{{ asset('img/logo.png') }}">
+
 
 @section('content')
 {{-- SLIDER --}}

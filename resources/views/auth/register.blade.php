@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Distorsi Atlantiz')
+@section('title', 'Distorsi Atlantiz - Register')
 
 @section('hide-navbar')
 @endsection

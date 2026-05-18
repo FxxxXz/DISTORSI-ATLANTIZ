@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Studio Booking - Distorsi Atlantiz')
+@section('title', 'HOME - Distorsi Atlantiz')
+
+<link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
+<link rel="shortcut icon" type="image/png" href="{{ asset('img/logo.png') }}">
 
 @section('content')
 {{-- ================= HERO SECTION ================= --}}

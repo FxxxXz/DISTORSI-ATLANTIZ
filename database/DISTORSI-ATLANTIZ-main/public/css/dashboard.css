@@ -1,0 +1,697 @@
+/* ================= DASHBOARD CSS ================= */
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* HERO BACKGROUND */
+.hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-top: -80px; /* Tarik ke atas untuk hilangkan hitam */
+    padding-top: 80px; /* Kompensasi agar konten tidak ketutupan */
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url("../img/background.png") center/cover no-repeat;
+    z-index: 0;
+    animation: slowZoom 20s ease-in-out infinite alternate;
+}
+
+@keyframes slowZoom {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.12);
+    }
+}
+
+/* Global Font */
+body {
+    font-family: "Montserrat", sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background-color: #0a0a0a;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(255, 0, 0, 0.35));
+    z-index: 1;
+}
+
+/* TEXT */
+.hero-content {
+    position: relative;
+    color: white;
+    z-index: 3;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.hero-title {
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.45),
+        0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ================= NAVBAR GLOBAL ================= */
+.custom-navbar {
+    background: transparent;
+    backdrop-filter: blur(12px);
+    transition: all 0.4s ease;
+    padding: 15px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
+.custom-navbar.scrolled {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    padding: 10px 0;
+}
+
+/* Container Navbar */
+.custom-navbar .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Logo */
+.logo-top {
+    width: 80px;
+    height: auto;
+    display: block;
+}
+
+/* Navigasi Tengah - Perfect Center */
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.nav-center .navbar-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 35px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-link {
+    color: white !important;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+    padding: 8px 0 !important;
+    text-decoration: none;
+    background: transparent !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #ff4d4d !important;
+}
+
+/* User Area */
+#userArea {
+    margin-left: auto;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.user-profile img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    filter: invert(1);
+}
+
+/* Button Login */
+.btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    background: transparent;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.btn-outline-light:hover {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+    color: white;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.dropdown-item {
+    color: white;
+    padding: 8px 20px;
+}
+
+.dropdown-item:hover {
+    background: #ff4d4d;
+    color: white;
+}
+
+/* ================= FADE REVEAL ================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= FILM GRAIN ================= */
+.film-grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.05;
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    background-size: 300px;
+    animation: grainMove 8s steps(10) infinite;
+}
+
+@keyframes grainMove {
+    0% {
+        transform: translate(0, 0);
+    }
+    10% {
+        transform: translate(-5%, -10%);
+    }
+    20% {
+        transform: translate(-15%, 5%);
+    }
+    30% {
+        transform: translate(7%, -25%);
+    }
+    40% {
+        transform: translate(-5%, 25%);
+    }
+    50% {
+        transform: translate(-15%, 10%);
+    }
+    60% {
+        transform: translate(15%, 0%);
+    }
+    70% {
+        transform: translate(0%, 15%);
+    }
+    80% {
+        transform: translate(3%, 35%);
+    }
+    90% {
+        transform: translate(-10%, 10%);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 992px) {
+    .hero {
+        margin-top: -70px;
+        padding-top: 70px;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .custom-navbar {
+        padding: 12px 0;
+    }
+
+    .nav-center {
+        position: static;
+        transform: none;
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    .nav-center .navbar-nav {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .custom-navbar .container {
+        flex-direction: column;
+    }
+
+    #userArea {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .logo-top {
+        width: 60px;
+    }
+
+    .nav-link {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        margin-top: -60px;
+        padding-top: 60px;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero {
+        margin-top: -50px;
+        padding-top: 50px;
+    }
+
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn-outline-light {
+        padding: 6px 15px;
+        font-size: 0.75rem;
+    }
+
+    .user-profile span {
+        display: none;
+    }
+}
+
+/* Tambahkan ke css/dashboard.css atau css/style.css */
+
+.dashboard-container {
+    padding: 120px 20px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 80vh;
+}
+
+.dashboard-welcome {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.dashboard-welcome h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.dashboard-welcome p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: #ff4757;
+    margin-bottom: 15px;
+}
+
+.dashboard-card h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.dashboard-card p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.btn-card {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #ff4757;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-card:hover {
+    background: #ff6b81;
+    color: #fff;
+}
+
+.admin-notice {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #ffc107;
+}
+
+.admin-notice i {
+    font-size: 1.2rem;
+}
+
+.admin-notice a {
+    color: #ffc107;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* Navbar User Dropdown */
+.nav-user-dropdown {
+    position: relative;
+}
+
+.nav-user-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-user-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    color: #ff4757;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    color: #ff6b81;
+}
+
+.logout-red {
+    color: #ff4757 !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.logout-red:hover {
+    color: #ff6b81 !important;
+    background-color: rgba(255, 71, 87, 0.1);
+}
+
+.logout-red i {
+    margin-right: 8px;
+}
+
+/* ================= LOGOUT LINK OVERRIDE ================= */
+.dropdown-menu .dropdown-item.logout-custom {
+    color: #ff4757 !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu .dropdown-item.logout-custom:hover,
+.dropdown-menu .dropdown-item.logout-custom:focus {
+    color: #ff6b81 !important;
+    background-color: rgba(255, 71, 87, 0.15);
+}
+
+.dropdown-menu .dropdown-item.logout-custom i {
+    color: #ff4757 !important;
+    margin-right: 8px;
+}
+
+/* SweetAlert Dark Theme */
+.swal2-popup {
+    background: #1a1a1a !important;
+    color: #fff !important;
+}
+
+.swal2-title,
+.swal2-html-container {
+    color: #fff !important;
+}
+
+/* ================= REGISTER BUTTON = SAMA DENGAN LOGIN ================= */
+.btn-register,
+.navbar .btn-primary,
+.ms-auto .btn-primary {
+    background: linear-gradient(90deg, #ff4d4d, #e63939) !important;
+    border: none !important;
+    color: #ffffff !important;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-register:hover,
+.navbar .btn-primary:hover,
+.ms-auto .btn-primary:hover {
+    background: linear-gradient(90deg, #e63939, #b61919) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 77, 77, 0.3) !important;
+}
+
+/* ================= SWEETALERT DARK THEME (Sesuai Login Box) ================= */
+.swal2-popup {
+    background: rgba(20, 20, 20, 0.95) !important; /* Sama dengan login box */
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.swal2-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+}
+
+.swal2-html-container {
+    color: #dddddd !important;
+    font-size: 0.9rem !important;
+}
+
+/* Tombol Konfirmasi = Sama dengan tombol SIGN IN */
+.swal2-confirm {
+    background: linear-gradient(90deg, #ff4d4d, #e63939) !important;
+    border: none !important;
+    border-radius: 14px !important;
+    padding: 14px 24px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+}
+
+.swal2-confirm:hover {
+    background: linear-gradient(90deg, #e63939, #cc2929) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(255, 77, 77, 0.3) !important;
+}
+
+/* Tombol Batal = Abu-abu gelap */
+.swal2-cancel {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 14px !important;
+    padding: 14px 24px !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+.swal2-cancel:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Icon = Merah coral */
+.swal2-icon {
+    border-color: #ff4d4d !important;
+    color: #ff4d4d !important;
+}
+
+.swal2-icon-content {
+    color: #ff4d4d !important;
+}
+
+.swal2-question {
+    border-color: #ff4d4d !important;
+    color: #ff4d4d !important;
+}
+
+/* Timer progress bar */
+.swal2-timer-progress-bar {
+    background: linear-gradient(90deg, #ff4d4d, #e63939) !important;
+}
+
+/* SweetAlert Logo Styling */
+.swal2-image {
+    margin-bottom: 15px !important;
+    border-radius: 12px !important;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)) !important;
+}
+
+/* Custom popup class */
+.swal-dark-popup {
+    background: rgba(20, 20, 20, 0.95) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.swal-dark-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    margin-top: 10px !important;
+}
+
+.swal-dark-text {
+    color: #dddddd !important;
+    font-size: 0.9rem !important;
+}
+
+.swal-confirm-btn {
+    background: linear-gradient(90deg, #ff4d4d, #e63939) !important;
+    border: none !important;
+    border-radius: 14px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+}
+
+.swal-cancel-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 14px !important;
+    padding: 12px 24px !important;
+    color: #ffffff !important;
+}
+
+/* Hilangkan scrollbar di semua browser */
+* {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE & Edge */
+}
+
+*::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+html,
+body {
+    overflow-y: auto;
+}
+
+/* Smooth scroll untuk seluruh halaman */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Atau kalau mau lebih smooth dengan momentum (mobile-like) */
+body {
+    -webkit-overflow-scrolling: touch;
+}

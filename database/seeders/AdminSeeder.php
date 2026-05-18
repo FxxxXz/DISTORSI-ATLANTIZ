@@ -10,27 +10,27 @@ class AdminSeeder extends Seeder
 {
     public function run()
     {
-        // Cek apakah admin sudah ada, jika belum buat
-        if (!User::where('email', 'admin@distorsiatlantiz.com')->exists()) {
+        // Buat user biasa (opsional)
+        if (!User::where('email', 'user@distorsi.com')->exists()) {
             User::create([
-                'nama_lengkap' => 'User',
+                'nama_lengkap' => 'User Biasa',
                 'username' => 'user',
-                'email' => 'user@distorsiatlantiz.com',
+                'email' => 'user@distorsi.com',
                 'password' => Hash::make('user123'),
                 'role' => 'user',
-                // 'is_active' => true, // Hapus sementara
+                'is_active' => true,
             ]);
         }
 
-        // Buat admin kedua (opsional)
-        if (!User::where('email', 'superadmin@distorsiatlantiz.com')->exists()) {
+        // Buat admin sesuai request
+        if (!User::where('email', 'admin@distorsi.com')->exists()) {
             User::create([
-                'nama_lengkap' => 'Super Admin',
-                'username' => 'superadmin',
-                'email' => 'superadmin@distorsiatlantiz.com',
+                'nama_lengkap' => 'Administrator',
+                'username' => 'admin',
+                'email' => 'admin@distorsi.com',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
-                // 'is_active' => true, // Hapus sementara
+                'is_active' => true,
             ]);
         }
     }

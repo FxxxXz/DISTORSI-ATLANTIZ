@@ -1,0 +1,489 @@
+/* ================= GLOBAL ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* HAPUS scrollbar-none - biarkan scroll normal */
+}
+
+html,
+body {
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    color: #ffffff;
+    background: #0a0a0a;
+    min-height: 100vh;
+}
+
+/* ================= BACKGROUND (DIPERBAIKI) ================= */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: url('../img/background.png') center/cover no-repeat fixed;
+    z-index: -2;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    /* Turunkan opacity overlay agar tidak terlalu gelap */
+    background: linear-gradient(
+        135deg,
+        rgba(40, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.75) 100%
+    );
+    z-index: -1;
+}
+
+/* ================= FILM GRAIN (OPSIONAL - BISA DIHAPUS JIKA MASIH ANEH) ================= */
+.film-grain {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.02; /* Kurangi opacity grain */
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    background-size: 300px;
+    animation: grainMove 8s steps(10) infinite;
+}
+
+@keyframes grainMove {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+    100% { transform: translate(0, 0); }
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* ================= NAVBAR ================= */
+.custom-navbar {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    padding: 18px 0;
+    transition: 0.4s;
+}
+
+.custom-navbar.scrolled {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.logo-top {
+    width: 90px;
+    height: auto;
+}
+
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.nav-center .navbar-nav {
+    flex-direction: row;
+}
+
+.nav-link {
+    color: white !important;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #ff4d4d !important;
+}
+
+.user-profile {
+    color: white;
+    cursor: pointer;
+}
+
+.user-profile img {
+    width: 28px;
+    filter: invert(1);
+}
+
+/* ================= PAGE HEADER ================= */
+.page-header {
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 130px;
+    padding-bottom: 80px;
+}
+
+.page-subtitle {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+}
+
+.page-title {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.page-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    line-height: 1.8;
+    max-width: 650px;
+    margin: auto;
+}
+
+/* ================= REVEAL ================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: 1s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= CONTACT SECTION (DIPERBAIKI - HAPUS BLUR BERLEBIH) ================= */
+.contact-section {
+    padding: 80px 0;
+    background: rgba(0, 0, 0, 0.4); /* Kurangi kegelapan */
+    /* HAPUS backdrop-filter: blur(10px); - ini penyebab utama efek aneh */
+}
+
+/* ================= CONTACT INFO ================= */
+.contact-info-wrapper {
+    height: 100%;
+    padding-right: 30px;
+}
+
+.contact-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.contact-subtext {
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.8;
+    margin-bottom: 45px;
+}
+
+.contact-items {
+    margin-bottom: 40px;
+}
+
+.contact-item {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.contact-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.contact-icon i {
+    color: #ff4d4d;
+    font-size: 1.3rem;
+}
+
+.contact-detail h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #ffffff;
+}
+
+.contact-detail p {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+/* ================= SOCIAL ================= */
+.social-section h6 {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-link {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.social-link:hover {
+    background: #ff4d4d;
+    transform: translateY(-3px);
+    color: white;
+}
+
+/* ================= FORM (DIPERBAIKI) ================= */
+.contact-form-wrapper {
+    background: rgba(17, 17, 17, 0.9);
+    border-radius: 24px;
+    padding: 45px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* HAPUS efek blur berlebihan */
+}
+
+.form-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.form-subtext {
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 30px;
+}
+
+.contact-form .form-label {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+    font-weight: 500;
+}
+
+.contact-form .form-control,
+.contact-form .form-select {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+}
+
+.contact-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.contact-form .form-control:focus,
+.contact-form .form-select:focus {
+    background: #1a1a1a;
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.2);
+    color: white;
+    outline: none;
+}
+
+.contact-form .form-select option {
+    background: #1a1a1a;
+    color: white;
+}
+
+.contact-form textarea {
+    resize: vertical;
+}
+
+/* ================= BUTTON ================= */
+.btn-submit {
+    background: linear-gradient(90deg, #ff4d4d, #ff6666);
+    border: none;
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 77, 77, 0.3);
+}
+
+/* ================= MAP ================= */
+.map-section {
+    height: 400px;
+    position: relative;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    filter: grayscale(100%) invert(92%) contrast(83%);
+}
+
+.map-overlay {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 15px 30px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.map-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.92rem;
+}
+
+.map-info i {
+    color: #ff4d4d;
+}
+
+/* ================= FOOTER ================= */
+.page-footer {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 40px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-logo {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.footer-tagline {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+}
+
+.footer-copyright {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.85rem;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    margin-left: 20px;
+    transition: 0.3s;
+    font-size: 0.85rem;
+}
+
+.footer-link:hover {
+    color: #ff4d4d;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 991px) {
+    .nav-center {
+        position: static;
+        transform: none;
+        margin-top: 20px;
+    }
+
+    .nav-center .navbar-nav {
+        flex-direction: column;
+        gap: 10px !important;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+    }
+
+    .contact-info-wrapper {
+        padding-right: 0;
+        margin-bottom: 50px;
+    }
+
+    .contact-form-wrapper {
+        padding: 35px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        min-height: 45vh;
+        padding-top: 120px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .contact-section {
+        padding: 60px 0;
+    }
+
+    .contact-form-wrapper {
+        padding: 28px;
+    }
+
+    .map-section {
+        height: 300px;
+    }
+
+    .map-overlay {
+        width: 90%;
+        text-align: center;
+        border-radius: 20px;
+    }
+
+    .footer-link {
+        margin-left: 10px;
+    }
+}
