@@ -1,0 +1,263 @@
+/* ================= PERBAIKAN LAYOUT FACILITIES ================= */
+/* Foto tetap ada, yang dirapikan hanya posisi dan ukuran */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a0a;
+    color: #ffffff;
+    font-family: 'Montserrat', 'Poppins', sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* PAGE HEADER */
+.page-header {
+    text-align: center;
+    padding: 100px 0 50px;
+}
+
+.page-subtitle {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.page-desc {
+    color: #aaaaaa;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* FACILITIES SECTION */
+.facilities-section {
+    padding: 40px 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 40px;
+    text-align: center;
+    color: #ffffff;
+}
+
+/* GRID FASILITAS - RAPI */
+.facilities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+/* CARD UNTUK FOTO */
+.facility-card {
+    background: rgba(20, 20, 20, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.facility-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff4d4d;
+}
+
+/* FOTO TETAP ADA, HANYA DIATUR UKURANNYA */
+.facility-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+/* KONTEN TEKS DI BAWAH FOTO */
+.facility-card .facility-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.facility-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.facility-card p {
+    color: #aaaaaa;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+/* BOOKING SECTION */
+.booking-section {
+    background: rgba(20, 20, 20, 0.6);
+    border-radius: 24px;
+    padding: 40px;
+    margin: 40px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.booking-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #ffffff;
+}
+
+.booking-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cccccc;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: #1a1a1a;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff4d4d;
+}
+
+.btn-submit {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+
+.btn-submit:hover {
+    background: #e63939;
+}
+
+/* PRICE LIST */
+.price-list {
+    margin-top: 40px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.price-name {
+    font-weight: 500;
+    color: #dddddd;
+}
+
+.price-value {
+    color: #ff4d4d;
+    font-weight: 700;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .facilities-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .facility-card img {
+        height: 180px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .booking-section {
+        padding: 25px;
+    }
+
+    .booking-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .page-header {
+        padding: 60px 0 30px;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+    }
+
+    .facility-card img {
+        height: 150px;
+    }
+
+    .facility-card h3 {
+        font-size: 1rem;
+    }
+
+    .price-name,
+    .price-value {
+        font-size: 0.8rem;
+    }
+}

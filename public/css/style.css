@@ -1,0 +1,327 @@
+/* ================= LOGIN PAGE CSS ================= */
+/* Background dengan Foto Sendiri + Opacity */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', 'Poppins', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* ================= BACKGROUND FOTO SENDIRI ================= */
+/* LAYER 1: FOTO BACKGROUND */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* GANTI 'nama-foto-anda.jpg' dengan nama file foto Anda */
+    background-image: url('../img/background-studio.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* INI YANG MENGATUR OPACITY FOTO */
+    opacity: 0.65; /* Nilai: 0 = transparan, 1 = solid. Bisa diatur 0.4 - 0.8 */
+    z-index: -2;
+}
+
+/* LAYER 2: OVERLAY GRADASI GELAP (AGAR TEKS MUDAH DIBACA) */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(30, 0, 0, 0.6) 100%);
+    z-index: -1;
+}
+
+/* ================= ATAU CARA LAIN (TANPA PSEUDO ELEMENT) ================= */
+/* Alternatif: pakai div terpisah jika ingin lebih fleksibel */
+.background-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.background-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+}
+
+/* LOGO ATAS (LUAR BOX) */
+.logo-top {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 60px;
+    height: auto;
+    z-index: 10;
+}
+
+/* LOGIN BOX UTAMA */
+.login-box {
+    background: rgba(20, 20, 20, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 45px 40px;
+    width: 100%;
+    max-width: 450px;
+    margin: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* LOGO DALAM BOX */
+.logo2 {
+    display: block;
+    width: 70px;
+    margin: 0 auto 20px auto;
+}
+
+/* TITLE */
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+/* DESCRIPTION */
+.login-desc {
+    font-size: 0.85rem;
+    text-align: center;
+    color: #dddddd;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* FORM CONTROL */
+.form-control {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(26, 26, 26, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
+    background: #1a1a1a;
+}
+
+.form-control::placeholder {
+    color: #888888;
+}
+
+/* PASSWORD WRAPPER */
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888888;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    color: #ff4d4d;
+}
+
+/* CHECKBOX */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-check-input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #ff4d4d;
+}
+
+.form-check-label {
+    color: #dddddd;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* FORGOT PASSWORD */
+.forgot-password a {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.forgot-password a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* BUTTON LOGIN */
+.btn-login {
+    width: 100%;
+    background: linear-gradient(90deg, #ff4d4d, #e63939);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 15px 0 20px;
+}
+
+.btn-login:hover {
+    background: linear-gradient(90deg, #e63939, #cc2929);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 77, 77, 0.3);
+}
+
+.btn-login:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* REGISTER TEXT */
+.register-text {
+    text-align: center;
+    color: #dddddd;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.register-text a {
+    color: #ff4d4d;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-text a:hover {
+    text-decoration: underline;
+}
+
+/* ALERT STYLES */
+.alert {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+}
+
+.alert-danger {
+    background: rgba(255, 77, 77, 0.15);
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    color: #ff8888;
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #8bc34a;
+}
+
+.d-none {
+    display: none;
+}
+
+/* INVALID FEEDBACK */
+.invalid-feedback {
+    display: none;
+    color: #ff8888;
+    font-size: 0.75rem;
+    margin-top: 5px;
+}
+
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    border-color: #ff4d4d;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/* SPINNER */
+.spinner-border {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner 0.75s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 550px) {
+    .login-box {
+        padding: 30px 25px;
+        margin: 15px;
+    }
+
+    .login-title {
+        font-size: 1.6rem;
+    }
+
+    .logo-top {
+        width: 45px;
+        top: 20px;
+        left: 20px;
+    }
+
+    .logo2 {
+        width: 55px;
+    }
+}
+
+/* SEMBUNYIKAN NAVBAR & FOOTER DI HALAMAN LOGIN */
+.navbar,
+.custom-navbar,
+header nav,
+.page-footer,
+footer {
+    display: none !important;
+}
