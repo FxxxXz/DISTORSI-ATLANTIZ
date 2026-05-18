@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('booking_id')->constrained('bookings')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('order_id')->unique();
-            $table->enum('method', ['transfer_bank', 'e_wallet', 'virtual_account'])->default('transfer_bank');
+            $table->enum('method', ['transfer_bank', 'e_wallet', 'virtual_account', 'qris'])->default('transfer_bank');
             $table->unsignedBigInteger('amount');
             $table->enum('status', ['pending', 'paid', 'failed', 'expired', 'refunded'])->default('pending');
             $table->string('payment_proof')->nullable();

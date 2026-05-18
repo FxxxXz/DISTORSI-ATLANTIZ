@@ -151,6 +151,37 @@ body::after {
     transition: background-color 5000s ease-in-out 0s;
 }
 
+/* ================= PASSWORD TOGGLE ================= */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .form-control {
+    padding-right: 45px; /* Beri ruang untuk icon */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #ff4d4d; /* Warna merah sesuai tema */
+    font-size: 18px;
+    z-index: 10;
+    user-select: none;
+}
+
+.toggle-password:hover {
+    color: #ff6666;
+}
+
+/* Pastikan icon terlihat */
+.toggle-password i {
+    display: inline-block;
+    pointer-events: none; /* Supaya click tetap ke span, bukan icon */
+}
+
 /* PASSWORD WRAPPER */
 .password-wrapper {
     position: relative;
@@ -393,7 +424,7 @@ footer {
     border-radius: 6px;
     background: transparent;
     color: rgba(255, 255, 255, 0.8);
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.85rem;
     font-weight: 400;
     letter-spacing: 0.5px;
@@ -418,3 +449,62 @@ footer {
     background: rgba(255, 255, 255, 0.12);
 }
 
+/* Logout link in dropdown - override Bootstrap */
+.dropdown-menu .dropdown-item.logout-red {
+    color: #ff4757 !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu .dropdown-item.logout-red:hover,
+.dropdown-menu .dropdown-item.logout-red:focus {
+    color: #ff6b81 !important;
+    background-color: rgba(255, 71, 87, 0.1);
+}
+
+.dropdown-menu .dropdown-item.logout-red i {
+    margin-right: 8px;
+    color: #ff4757 !important;
+}
+
+/* ================= SWEETALERT DARK THEME ================= */
+.swal2-popup {
+    background: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.swal2-title {
+    color: #ffffff !important;
+}
+
+.swal2-html-container {
+    color: #dddddd !important;
+}
+
+.swal2-confirm {
+    background: #ff4757 !important;
+    color: #ffffff !important;
+}
+
+.swal2-cancel {
+    background: #6c757d !important;
+    color: #ffffff !important;
+}
+
+.swal2-icon {
+    border-color: #ff4757 !important;
+    color: #ff4757 !important;
+}
+
+.swal2-icon-content {
+    color: #ff4757 !important;
+}
+
+.swal2-success-ring {
+    border-color: #ff4757 !important;
+}
+
+.swal2-timer-progress-bar {
+    background: #ff4757 !important;
+}

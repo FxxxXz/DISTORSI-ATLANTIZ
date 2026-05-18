@@ -6,16 +6,16 @@ console.log("Dashboard loaded");
    FADE REVEAL PAGE LOAD
 ========================= */
 window.addEventListener("load", () => {
-  const reveals = document.querySelectorAll(".reveal");
+    const reveals = document.querySelectorAll(".reveal");
 
-  reveals.forEach((el, index) => {
-    setTimeout(
-      () => {
-        el.classList.add("active");
-      },
-      300 + index * 200,
-    );
-  });
+    reveals.forEach((el, index) => {
+        setTimeout(
+            () => {
+                el.classList.add("active");
+            },
+            300 + index * 200,
+        );
+    });
 });
 
 /* =========================
@@ -24,25 +24,25 @@ window.addEventListener("load", () => {
 const navbar = document.querySelector(".custom-navbar");
 
 window.addEventListener("scroll", () => {
-  if (window.scrollY > 50) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
-  }
+    if (window.scrollY > 50) {
+        navbar.classList.add("scrolled");
+    } else {
+        navbar.classList.remove("scrolled");
+    }
 });
 
 /* =========================
    USER NAVBAR SYSTEM
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
-  const userArea = document.getElementById("userArea");
+    const userArea = document.getElementById("userArea");
 
-  const isLogin = localStorage.getItem("isLogin");
-  const username = localStorage.getItem("username") || "Guest";
+    const isLogin = localStorage.getItem("isLogin");
+    const username = localStorage.getItem("username") || "Guest";
 
-  // ===== USER LOGIN =====
-  if (isLogin === "true") {
-    userArea.innerHTML = `
+    // ===== USER LOGIN =====
+    if (isLogin === "true") {
+        userArea.innerHTML = `
       <div class="dropdown">
         <div class="d-flex align-items-center gap-2 user-profile"
              data-bs-toggle="dropdown"
@@ -61,71 +61,87 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
-    // Ganti dari logout langsung ke confirmLogout
-    document.getElementById("logoutBtn").addEventListener("click", confirmLogout);
-  }
+        // Ganti dari logout langsung ke confirmLogout
+        document
+            .getElementById("logoutBtn")
+            .addEventListener("click", confirmLogout);
+    }
 
-  // ===== GUEST MODE =====
-  else {
-    userArea.innerHTML = `
+    // ===== GUEST MODE =====
+    else {
+        userArea.innerHTML = `
       <a href="${window.location.origin}/login" class="btn btn-outline-light btn-sm">
         Login
       </a>
     `;
-  }
+    }
+});
+
+// Smooth scroll untuk anchor links (contoh: klik menu lompat ke section)
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
+    });
 });
 
 /* =========================
    LOGOUT DENGAN KONFIRMASI
 ========================= */
 function confirmLogout() {
-  // Cek apakah SweetAlert tersedia
-  if (typeof Swal !== 'undefined' && Swal) {
-    // Gunakan SweetAlert yang lebih keren
-    Swal.fire({
-      title: 'Yakin ingin keluar?',
-      text: 'Anda akan diarahkan ke halaman utama.',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#ff4d4d',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Ya, Keluar!',
-      cancelButtonText: 'Batal',
-      background: '#1a1a1a',
-      color: '#fff',
-      iconColor: '#ff4d4d'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Tampilkan animasi sukses logout
+    // Cek apakah SweetAlert tersedia
+    if (typeof Swal !== "undefined" && Swal) {
+        // Gunakan SweetAlert yang lebih keren
         Swal.fire({
-          title: 'Berhasil Keluar!',
-          text: 'Sampai jumpa lagi!',
-          icon: 'success',
-          confirmButtonColor: '#ff4d4d',
-          background: '#1a1a1a',
-          color: '#fff',
-          timer: 1500,
-          showConfirmButton: false
+            title: "Yakin ingin keluar?",
+            text: "Anda akan diarahkan ke halaman utama.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#ff4d4d",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Ya, Keluar!",
+            cancelButtonText: "Batal",
+            background: "#1a1a1a",
+            color: "#fff",
+            iconColor: "#ff4d4d",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Tampilkan animasi sukses logout
+                Swal.fire({
+                    title: "Berhasil Keluar!",
+                    text: "Sampai jumpa lagi!",
+                    icon: "success",
+                    confirmButtonColor: "#ff4d4d",
+                    background: "#1a1a1a",
+                    color: "#fff",
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+                setTimeout(() => {
+                    logout();
+                }, 1500);
+            }
         });
-        setTimeout(() => {
-          logout();
-        }, 1500);
-      }
-    });
-  } else {
-    // Fallback ke confirm bawaan browser
-    const yakin = confirm("Apakah Anda yakin ingin keluar?");
-    if (yakin) {
-      logout();
+    } else {
+        // Fallback ke confirm bawaan browser
+        const yakin = confirm("Apakah Anda yakin ingin keluar?");
+        if (yakin) {
+            logout();
+        }
     }
-  }
 }
 
 /* =========================
    LOGOUT FUNCTION
 ========================= */
 function logout() {
-  localStorage.removeItem("isLogin");
-  localStorage.removeItem("username");
-  window.location.href = window.location.origin;
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("username");
+    window.location.href = window.location.origin;
 }

@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/AuthController.php
 
 namespace App\Http\Controllers;
 
@@ -7,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -29,7 +29,6 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Cek user aktif
         $user = User::where('email', $credentials['email'])->first();
         
         if ($user && !$user->is_active) {
@@ -64,26 +63,30 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validated = $request->validate([
-            'nama_lengkap' => 'required|string|min:3|max:255',
-            'username' => 'required|string|min:5|max:255|unique:users|regex:/^[a-zA-Z0-9_]+$/',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        $request->validate([
+        'namaLengkap' => ['required', 'string', 'max:255', 'min:3'],
+        'username' => ['required', 'string', 'max:255', 'min:5', 'unique:users,username'],
+        'email' => ['required', 'string', 'email:dns', 'max:255', 'unique:users,email'],
+        'password' => ['required', 'string', 'min:6', 'confirmed'],
+    ]);
 
         $user = User::create([
-            'nama_lengkap' => $validated['nama_lengkap'],
-            'username' => $validated['username'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => 'user',
-            'is_active' => true,
-        ]);
+        'nama_lengkap' => $request->namaLengkap,
+        'username' => strtolower($request->username),
+        'email' => strtolower($request->email),
+        'password' => Hash::make($request->password),
+        'role' => 'user',
+        'is_active' => true,
+    ]);
 
         Auth::login($user);
 
-        return redirect()->route('home')->with('success', 'Registrasi berhasil!');
-    }
+        return response()->json([
+        'success' => true,
+        'message' => 'Registrasi berhasil!',
+        'redirect' => route('home')  // ← UBAH INI: dari 'dashboard' jadi 'home'
+    ]);
+}
 
     public function logout(Request $request)
     {

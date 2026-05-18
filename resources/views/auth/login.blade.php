@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Booking Studio Musik - Login')
+@section('title', 'Distorsi Atlantiz - Login')
 
 @section('hide-navbar')
 @endsection

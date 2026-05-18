@@ -29,8 +29,9 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
             'studio_id' => 'required|exists:studios,id',
-            'tanggal' => 'required|date|after_or_equal:today',
+            'tanggal' => 'required|date',
             'jam_mulai' => 'required',
             'durasi' => 'required|integer|min:1|max:8',
             'jumlah_orang' => 'required|integer|min:1|max:20',
@@ -49,6 +50,7 @@ class BookingController extends Controller
         // Simpan booking
         $booking = Booking::create([
             'user_id' => Auth::id(),
+            'nama_lengkap' => $request->nama_lengkap,
             'studio_id' => $request->studio_id,
             'tanggal' => $request->tanggal,
             'jam_mulai' => $jamMulai,
@@ -59,6 +61,11 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('booking.index')->with('success', 'Booking berhasil! Silakan tunggu konfirmasi dari admin.');
+        // Return JSON untuk AJAX
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking berhasil! Silakan tunggu konfirmasi dari admin.',
+            'booking_id' => $booking->id
+        ]);
     }
 }

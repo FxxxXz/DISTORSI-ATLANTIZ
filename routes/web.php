@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\StudioController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\KontakController;
+use App\Http\Controllers\PaymentController;
 
 // ================= GUEST / PUBLIC ROUTES =================
 Route::get('/', fn() => view('home'))->name('home');
@@ -31,7 +32,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::middleware('auth')->group(function () {
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-    
+    // Payment routes
+    Route::get('/booking/{booking}/payment', [PaymentController::class, 'form'])->name('payment.form');
+    Route::post('/booking/{booking}/payment', [PaymentController::class, 'create'])->name('payment.create');
+    Route::get('/payment/{payment}/status', [PaymentController::class, 'status'])->name('payment.status');
+    Route::post('/payment/{payment}/proof', [PaymentController::class, 'uploadProof'])->name('payment.proof');
+    Route::post('/payment/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+    Route::post('/payment/{payment}/simulate', [PaymentController::class, 'simulate'])->name('payment.simulate');
+
     Route::get('/dashboard', function () {
         if (auth()->user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
@@ -43,6 +51,9 @@ Route::middleware('auth')->group(function () {
 // ================= ADMIN ROUTES =================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Payments
+    Route::post('payments/{payment}/verify', [PaymentController::class, 'verify'])->name('payments.verify');
     
     // Studios
     Route::get('studios', [StudioController::class, 'index'])->name('studios');

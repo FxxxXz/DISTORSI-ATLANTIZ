@@ -520,19 +520,40 @@
                         <div class="row g-3">
                             {{-- NAMA LENGKAP --}}
                              <div class="col-md-6">
-        <label class="form-label">Nama Lengkap</label>  {{-- WAJIB ADA --}}
-        <input type="text" class="form-control" id="nama" 
-               value="{{ auth()->user()->name ?? '' }}" 
-               required>  {{-- HAPUS readonly kalau mau bisa edit --}}
-    </div>
+    <label class="form-label">Nama Lengkap</label>
+    <input type="text" 
+       class="form-control" 
+       id="nama" 
+       name="nama"
+       value="{{ auth()->user()->nama_lengkap ?? '' }}" 
+       placeholder="Nama Lengkap"
+       required>
+</div>
                             <div class="col-md-6">
                                 <label class="form-label">Nomor Telepon</label>
-                                <input type="tel" class="form-control" id="telepon" pattern="[0-9]*" inputmode="numeric" placeholder="Contoh: 081234567890" required>
-                            </div>
+                                <input type="tel" 
+           class="form-control" 
+           id="telepon" 
+           pattern="[0-9]*" 
+           inputmode="numeric" 
+           placeholder="Contoh: 081234567890" 
+           autocomplete="off"
+           autocorrect="off"
+           autocapitalize="off"
+           spellcheck="false"
+           required>
+</div>
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" value="{{ auth()->user()->email ?? '' }}" required>
-                            </div>
+                                <input type="email" 
+       class="form-control" 
+       id="email" 
+       name="email"
+       value="{{ auth()->user()->email ?? '' }}" 
+       placeholder="email@contoh.com"
+       readonly
+       required>
+</div>
                             <div class="col-md-6">
                                 <label class="form-label">Pilih Studio</label>
                                 <select class="form-select" id="studioType" required>
@@ -584,7 +605,7 @@
                                 <label class="form-label">Durasi (jam)</label>
                                 <select class="form-select" id="durasi" required>
                                     @for($i = 1; $i <= 6; $i++)
-                                        <option value="{{ $i }}" {{ $i == 2 ? 'selected' : '' }}>{{ $i }} Jam</option>
+                                        <option value="{{ $i }}" {{ $i == 1 ? 'selected' : '' }}>{{ $i }} Jam</option>
                                     @endfor
                                 </select>
                             </div>
@@ -789,6 +810,7 @@ if (bookingForm) {
 
     const formData = {
       user_id: parseInt(userId.value),
+      nama_lengkap: document.getElementById("nama").value,
       studio_id: parseInt(studioSelect.value),
       tanggal: document.getElementById("tanggal").value,
       jam_mulai: jamMulai,
@@ -800,40 +822,40 @@ if (bookingForm) {
       _token: document.querySelector('input[name="_token"]').value
     };
 
-    try {
-      const response = await fetch('{{ route("booking.store") }}', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': formData._token,
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+try {
+  const response = await fetch('{{ route("booking.store") }}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': formData._token,
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  });
 
-      const result = await response.json();
+  const result = await response.json();
 
-      if (response.ok && result.success) {
-        showAlert('Booking berhasil! Silakan cek email untuk konfirmasi.', 'success');
+  if (response.ok && result.success) {
+    showAlert(result.message || 'Booking berhasil! Silakan cek email untuk konfirmasi.', 'success');
 
-        btnSubmit.textContent = "BOOKING BERHASIL ✓";
-        btnSubmit.style.background = "#4CAF50";
+    btnSubmit.textContent = "BOOKING BERHASIL ✓";
+    btnSubmit.style.background = "#4CAF50";
 
-        setTimeout(() => {
-          btnSubmit.textContent = originalText;
-          btnSubmit.style.background = "";
-          btnSubmit.disabled = false;
-          bookingForm.reset();
-          updatePrice();
-        }, 3000);
-      } else {
-        throw new Error(result.message || 'Terjadi kesalahan');
-      }
-    } catch (error) {
-      showAlert(error.message || 'Gagal melakukan booking. Silakan coba lagi.');
+    setTimeout(() => {
       btnSubmit.textContent = originalText;
+      btnSubmit.style.background = "";
       btnSubmit.disabled = false;
-    }
+      bookingForm.reset();
+      updatePrice();
+    }, 3000);
+  } else {
+    throw new Error(result.message || 'Terjadi kesalahan server');
+  }
+} catch (error) {
+  showAlert(error.message || 'Gagal melakukan booking. Silakan coba lagi.');
+  btnSubmit.textContent = originalText;
+  btnSubmit.disabled = false;
+}
   });
 }
 

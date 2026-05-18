@@ -11,36 +11,44 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     
     <style>
-        :root {
-            --sidebar-width: 260px;
-            --primary: #ff4d4d;
-            --dark: #1a1a1a;
-            --darker: #0f0f0f;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: #f5f5f5;
-            overflow-x: hidden;
-        }
+    :root {
+        --sidebar-width: 260px;
+        --primary: #ff4d4d;
+        --dark: #1a1a1a;
+        --darker: #0f0f0f;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        /* HILANGKAN SCROLLBAR GLOBAL */
+        scrollbar-width: none;        /* Firefox */
+        -ms-overflow-style: none;     /* IE & Edge */
+    }
+    
+    *::-webkit-scrollbar {
+        display: none;                /* Chrome, Safari, Opera */
+    }
+    
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background: #f5f5f5;
+        overflow-x: hidden;
+    }
         
         .admin-sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            background: var(--dark);
-            color: white;
-            overflow-y: auto;
-            z-index: 1000;
-        }
+        width: var(--sidebar-width);
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: var(--dark);
+        color: white;
+        overflow-y: auto;      /* tetap bisa scroll */
+        z-index: 1000;
+        /* scrollbar sudah di-hide oleh * selector di atas */
+    }
         
         .admin-sidebar .logo {
             padding: 20px;

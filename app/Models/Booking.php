@@ -80,4 +80,15 @@ class Booking extends Model
     {
         return 'Rp ' . number_format($this->total_harga, 0, ',', '.');
     }
+    
+        // Relasi ke Payment
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->payment && $this->payment->status === 'paid';
+    }
 }

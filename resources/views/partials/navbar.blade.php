@@ -42,11 +42,10 @@
                             @endif
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">Logout</button>
-                                </form>
-                            </li>
+    <a href="#" onclick="handleLogout(event)" class="dropdown-item logout-custom">
+        <i class="bi bi-box-arrow-right"></i> Logout
+    </a>
+</li>
                         </ul>
                     </div>
                 @else
@@ -57,3 +56,68 @@
         </div>
     </div>
 </nav>
+
+{{-- Logout Script --}}
+<script>
+function handleLogout(e) {
+    e.preventDefault();
+    
+    Swal.fire({
+        title: 'Konfirmasi Logout',
+        text: 'Apakah Anda yakin ingin keluar?',
+        imageUrl: '{{ asset("img/logo.png") }}',  // ← LOGO DISTORSI ATLANTIZ
+        imageWidth: 100,
+        imageHeight: 100,
+        imageAlt: 'Distorsi Atlantiz Logo',
+        showCancelButton: true,
+        confirmButtonColor: '#ff4757',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        allowOutsideClick: false,
+        background: 'rgba(20, 20, 20, 0.95)',
+        color: '#ffffff',
+        backdrop: 'rgba(0, 0, 0, 0.6)',
+        customClass: {
+            popup: 'swal-dark-popup',
+            title: 'swal-dark-title',
+            htmlContainer: 'swal-dark-text',
+            confirmButton: 'swal-confirm-btn',
+            cancelButton: 'swal-cancel-btn'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Memproses...',
+                text: 'Sedang logout',
+                imageUrl: '{{ asset("img/logo.png") }}',  // ← LOGO JUGA DI LOADING
+                imageWidth: 60,
+                imageHeight: 60,
+                imageAlt: 'Distorsi Atlantiz Logo',
+                allowOutsideClick: false,
+                background: 'rgba(20, 20, 20, 0.95)',
+                color: '#ffffff',
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Create form and submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("logout") }}';
+            form.style.display = 'none';
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]').content;
+            
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
