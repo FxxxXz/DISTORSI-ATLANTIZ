@@ -13,7 +13,27 @@
                     </h5>
                 </div>
                 <div class="card-body p-4">
-                    
+
+                    {{-- Flash Messages --}}
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    @if(session('info'))
+                        <div class="alert alert-info alert-dismissible fade show">
+                            <i class="bi bi-info-circle me-2"></i>{{ session('info') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
                     {{-- Alert Status --}}
                     @php
                         $statusConfig = [
@@ -21,8 +41,9 @@
                             'paid' => ['class' => 'success', 'icon' => 'check-circle', 'text' => 'Pembayaran Berhasil'],
                             'failed' => ['class' => 'danger', 'icon' => 'x-circle', 'text' => 'Pembayaran Gagal'],
                             'expired' => ['class' => 'secondary', 'icon' => 'clock-history', 'text' => 'Pembayaran Kedaluwarsa'],
+                            'refunded' => ['class' => 'info', 'icon' => 'arrow-counterclockwise', 'text' => 'Dana Dikembalikan'],
                         ];
-                        $config = $statusConfig[$payment->status] ?? $statusConfig['pending'];
+                        $config = $statusConfig[$payment->status] ?? ['class' => 'light', 'icon' => 'question', 'text' => 'Status Tidak Dikenal'];
                     @endphp
 
                     <div class="alert alert-{{ $config['class'] }} d-flex align-items-center mb-4">
@@ -38,11 +59,11 @@
                         <h6 class="fw-bold mb-3">Detail Booking</h6>
                         <div class="row g-2 small">
                             <div class="col-6">Studio:</div>
-                            <div class="col-6 text-end fw-semibold">{{ $payment->booking->studio->nama }}</div>
+                            <div class="col-6 text-end fw-semibold">{{ $payment->booking->studio->nama ?? '-' }}</div>
                             <div class="col-6">Tanggal:</div>
-                            <div class="col-6 text-end">{{ $payment->booking->tanggal->format('d M Y') }}</div>
+                            <div class="col-6 text-end">{{ $payment->booking->tanggal ? $payment->booking->tanggal->format('d M Y') : '-' }}</div>
                             <div class="col-6">Waktu:</div>
-                            <div class="col-6 text-end">{{ $payment->booking->jam_mulai }} - {{ $payment->booking->jam_selesai }}</div>
+                            <div class="col-6 text-end">{{ $payment->booking->jam_mulai ?? '-' }} - {{ $payment->booking->jam_selesai ?? '-' }}</div>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between align-items-center">
@@ -59,22 +80,23 @@
                             <h6 class="fw-bold mb-3">
                                 <i class="bi bi-qr-code-scan me-2"></i>Scan QRIS untuk Membayar
                             </h6>
-                            
+
                             {{-- QR Code dari API Online (qrserver.com) --}}
                             <div class="d-inline-block p-3 bg-white border rounded-3 shadow-sm mb-3">
-                                <img 
-                                    src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ urlencode('ID' . $payment->order_id . '.X' . $payment->amount . '.QRIS') }}" 
-                                    alt="QRIS Code" 
+                                <img
+                                    src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ urlencode('ID' . $payment->order_id . '.X' . $payment->amount . '.QRIS') }}"
+                                    alt="QRIS Code"
                                     class="img-fluid"
                                     style="width: 250px; height: 250px;"
                                     id="qris-image"
+                                    onerror="this.src='https://via.placeholder.com/250?text=QRIS+Error';this.onerror=null;"
                                 >
                             </div>
-                            
+
                             <p class="text-muted small mb-3">
                                 Scan kode QR di atas menggunakan aplikasi e-wallet atau mobile banking Anda
                             </p>
-                            
+
                             {{-- Badge E-Wallet --}}
                             <div class="d-flex justify-content-center flex-wrap gap-1 mb-3">
                                 <span class="badge bg-primary">DANA</span>
@@ -84,7 +106,7 @@
                                 <span class="badge bg-info text-dark">LinkAja</span>
                                 <span class="badge bg-secondary">SeaBank</span>
                             </div>
-                            
+
                             {{-- Info Order & Countdown --}}
                             <div class="mt-3 p-3 bg-light rounded text-start small border">
                                 <div class="d-flex justify-content-between mb-2">
@@ -95,10 +117,10 @@
                                     <span class="text-muted">Total Pembayaran:</span>
                                     <span class="fw-bold text-danger">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-muted">Berlaku sampai:</span>
-                                    <span class="fw-semibold text-danger" id="expiry-time">
-                                        {{ $payment->expired_at->format('d M Y H:i') }}
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">Sisa waktu:</span>
+                                    <span class="fw-semibold" id="countdown-timer">
+                                        {{ $payment->expired_at ? $payment->expired_at->format('d M Y H:i') : '-' }}
                                     </span>
                                 </div>
                             </div>
@@ -122,7 +144,7 @@
                             <h6 class="fw-bold mb-3">
                                 <i class="bi bi-bank me-2"></i>Informasi Rekening
                             </h6>
-                            
+
                             <div class="d-flex align-items-center p-3 bg-white border rounded mb-3">
                                 <div class="flex-grow-1">
                                     <div class="small text-muted">Bank BCA</div>
@@ -133,7 +155,7 @@
                                     <i class="bi bi-copy"></i>
                                 </button>
                             </div>
-                            
+
                             <div class="alert alert-warning small py-2">
                                 <i class="bi bi-exclamation-triangle me-1"></i>
                                 Transfer sesuai nominal hingga 3 digit terakhir untuk verifikasi otomatis
@@ -151,9 +173,10 @@
                             <p class="small text-muted mb-3">
                                 Silakan cek notifikasi di aplikasi e-wallet Anda atau klik tombol di bawah untuk melanjutkan pembayaran.
                             </p>
-                            <button class="btn btn-success w-100 py-2">
+                            <button class="btn btn-success w-100 py-2" disabled>
                                 <i class="bi bi-phone me-2"></i>Buka Aplikasi E-Wallet
                             </button>
+                            <div class="form-text text-center mt-2">Fitur ini akan segera hadir</div>
                         </div>
 
                     {{-- ============================================================ --}}
@@ -191,22 +214,28 @@
                         <form action="{{ route('payment.proof', $payment) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
-                                <input 
-                                    type="file" 
-                                    name="payment_proof" 
-                                    class="form-control" 
-                                    accept="image/jpeg,image/png,image/jpg" 
+                                <input
+                                    type="file"
+                                    name="payment_proof"
+                                    class="form-control @error('payment_proof') is-invalid @enderror"
+                                    accept="image/jpeg,image/png,image/jpg"
                                     required
                                 >
                                 <div class="form-text">Format: JPG, PNG (Maksimal 2MB)</div>
+                                @error('payment_proof')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
-                                <textarea 
-                                    name="notes" 
-                                    class="form-control" 
-                                    rows="2" 
+                                <textarea
+                                    name="notes"
+                                    class="form-control @error('notes') is-invalid @enderror"
+                                    rows="2"
                                     placeholder="Catatan tambahan (opsional)"
                                 ></textarea>
+                                @error('notes')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <button type="submit" class="btn btn-primary w-100 py-2">
                                 <i class="bi bi-upload me-2"></i>Upload Bukti
@@ -220,22 +249,26 @@
                                 <div class="small">Menunggu verifikasi admin. Silakan cek status secara berkala.</div>
                             </div>
                         </div>
+                        {{-- Preview bukti --}}
+                        <div class="text-center mb-3">
+                            <img src="{{ asset('storage/' . $payment->payment_proof) }}" alt="Bukti Pembayaran" class="img-fluid rounded border" style="max-height: 300px;">
+                        </div>
                     @endif
 
                     {{-- ============================================================ --}}
                     {{-- TOMBOL AKSI                                                  --}}
                     {{-- ============================================================ --}}
-                    <div class="d-flex gap-2 mt-4">
-                        <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary flex-fill py-2">
+                    <div class="d-flex gap-2 mt-4 flex-wrap">
+                        <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary py-2">
                             <i class="bi bi-arrow-left me-2"></i>Kembali
                         </a>
-                        
+
                         @if($payment->status === 'pending')
-                            <form action="{{ route('payment.cancel', $payment) }}" method="POST" class="flex-fill">
+                            <form action="{{ route('payment.cancel', $payment) }}" method="POST">
                                 @csrf
-                                <button 
-                                    type="submit" 
-                                    class="btn btn-outline-danger w-100 py-2" 
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-danger py-2"
                                     onclick="return confirm('Yakin ingin membatalkan pembayaran ini?')"
                                 >
                                     <i class="bi bi-x-circle me-2"></i>Batalkan
@@ -245,9 +278,9 @@
 
                         {{-- Simulasi Bayar (hanya Local/Development) --}}
                         @if(app()->environment('local') && $payment->status === 'pending')
-                            <form action="{{ route('payment.simulate', $payment) }}" method="POST" class="flex-fill">
+                            <form action="{{ route('payment.simulate', $payment) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-success w-100 py-2">
+                                <button type="submit" class="btn btn-success py-2">
                                     <i class="bi bi-check-lg me-2"></i>Simulasi Bayar
                                 </button>
                             </form>
@@ -267,26 +300,7 @@
  */
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        // Toast notification (jika pakai Bootstrap 5)
-        if (typeof bootstrap !== 'undefined') {
-            const toast = document.createElement('div');
-            toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3';
-            toast.setAttribute('role', 'alert');
-            toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="bi bi-check-circle me-2"></i>Nomor berhasil disalin!
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            const bsToast = new bootstrap.Toast(toast);
-            bsToast.show();
-            setTimeout(() => toast.remove(), 3000);
-        } else {
-            alert('Nomor berhasil disalin!');
-        }
+        showToast('Nomor berhasil disalin!', 'success');
     }).catch(err => {
         console.error('Gagal menyalin:', err);
         // Fallback
@@ -296,8 +310,35 @@ function copyToClipboard(text) {
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        alert('Nomor berhasil disalin!');
+        showToast('Nomor berhasil disalin!', 'success');
     });
+}
+
+/**
+ * Show Bootstrap Toast
+ */
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed top-0 end-0 m-3`;
+    toast.style.zIndex = '9999';
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle me-2"></i>${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    if (typeof bootstrap !== 'undefined') {
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        setTimeout(() => toast.remove(), 3000);
+    } else {
+        alert(message);
+        toast.remove();
+    }
 }
 
 /**
@@ -309,9 +350,12 @@ function downloadQR() {
         alert('QR Code tidak ditemukan!');
         return;
     }
-    
+
     fetch(img.src)
-        .then(response => response.blob())
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.blob();
+        })
         .then(blob => {
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -321,6 +365,7 @@ function downloadQR() {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
+            showToast('QR Code berhasil disimpan!', 'success');
         })
         .catch(err => {
             console.error('Gagal download:', err);
@@ -335,7 +380,7 @@ function downloadQR() {
 function shareQR() {
     const img = document.getElementById('qris-image');
     if (!img) return;
-    
+
     if (navigator.share) {
         fetch(img.src)
             .then(response => response.blob())
@@ -348,11 +393,11 @@ function shareQR() {
                 }).catch(err => {
                     if (err.name !== 'AbortError') {
                         console.error('Share failed:', err);
+                        copyToClipboard(img.src);
                     }
                 });
             });
     } else {
-        // Fallback: copy link
         copyToClipboard(img.src);
     }
 }
@@ -361,28 +406,31 @@ function shareQR() {
  * Countdown timer untuk expiry
  */
 document.addEventListener('DOMContentLoaded', function() {
-    const expiryElement = document.getElementById('expiry-time');
-    if (!expiryElement) return;
-    
-    const expiryTime = new Date('{{ $payment->expired_at->toIso8601String() }}').getTime();
-    
+    const countdownElement = document.getElementById('countdown-timer');
+    if (!countdownElement) return;
+
+    const expiryTime = new Date('{{ $payment->expired_at ? $payment->expired_at->toIso8601String() : '' }}').getTime();
+    if (!expiryTime || isNaN(expiryTime)) return;
+
     function updateCountdown() {
         const now = new Date().getTime();
         const distance = expiryTime - now;
-        
+
         if (distance < 0) {
-            expiryElement.innerHTML = '<span class="badge bg-danger">KEDALUWARSA</span>';
-            expiryElement.classList.add('text-danger');
+            countdownElement.innerHTML = '<span class="badge bg-danger">KEDALUWARSA</span>';
+            countdownElement.classList.add('text-danger');
+            // Reload halaman setelah expired
+            setTimeout(() => location.reload(), 2000);
             return;
         }
-        
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        const hours = Math.floor(distance / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-        expiryElement.innerHTML = `${hours}j ${minutes}m ${seconds}d`;
+
+        countdownElement.innerHTML = `<span class="text-danger fw-bold">${hours}j ${minutes}m ${seconds}d</span>`;
     }
-    
+
     updateCountdown();
     setInterval(updateCountdown, 1000);
 });

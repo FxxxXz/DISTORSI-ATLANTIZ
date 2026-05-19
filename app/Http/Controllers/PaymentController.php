@@ -16,13 +16,19 @@ class PaymentController extends Controller
             abort(403);
         }
 
+        if (in_array($booking->status, ['confirmed', 'completed', 'cancelled'])) {
+            return redirect()->route('dashboard')
+                ->with('info', 'Booking ini sudah tidak dapat dibayar.');
+        }
+
         if ($booking->payment) {
             return redirect()->route('payment.status', $booking->payment);
         }
 
-        $studio = $booking->studio;
-
-        return view('payment.form', compact('booking', 'studio'));
+        return view('payment.form', [
+            'booking' => $booking,
+            'studio' => $booking->studio,
+        ]);
     }
 
     public function create(Request $request, Booking $booking)
@@ -31,8 +37,13 @@ class PaymentController extends Controller
             abort(403);
         }
 
+        if ($booking->payment) {
+            return redirect()->route('payment.status', $booking->payment)
+                ->with('info', 'Anda sudah memiliki pembayaran untuk booking ini.');
+        }
+
         $request->validate([
-            'method' => 'required|in:transfer_bank,e_wallet,virtual_account,qris',  // ✅ Tambah qris
+            'method' => 'required|in:' . implode(',', Payment::METHODS),
         ]);
 
         $payment = Payment::create([
@@ -41,11 +52,12 @@ class PaymentController extends Controller
             'order_id' => Payment::generateOrderId(),
             'method' => $request->method,
             'amount' => $booking->total_harga,
-            'status' => 'pending',
+            'status' => Payment::STATUS_PENDING,
             'expired_at' => now()->addHours(24),
         ]);
 
-        return redirect()->route('payment.status', $payment);
+        return redirect()->route('payment.status', $payment)
+            ->with('success', 'Pembayaran berhasil dibuat! Silakan lakukan pembayaran.');
     }
 
     public function status(Payment $payment)
@@ -54,9 +66,8 @@ class PaymentController extends Controller
             abort(403);
         }
 
-        if ($payment->status === 'pending' && $payment->isExpired()) {
-            $payment->update(['status' => 'expired']);
-            $payment->booking->update(['status' => 'cancelled']);
+        if ($payment->isPending() && $payment->isExpired()) {
+            $payment->markAsExpired();
         }
 
         return view('payment.status', compact('payment'));
@@ -68,10 +79,18 @@ class PaymentController extends Controller
             abort(403);
         }
 
+        if (!$payment->isPending()) {
+            return back()->with('error', 'Tidak dapat upload bukti untuk pembayaran ini.');
+        }
+
         $request->validate([
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        if ($payment->payment_proof) {
+            Storage::disk('public')->delete($payment->payment_proof);
+        }
 
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
 
@@ -90,11 +109,11 @@ class PaymentController extends Controller
             abort(403);
         }
 
-        if ($payment->status !== 'pending') {
+        if (!$payment->isPending()) {
             return back()->with('error', 'Pembayaran tidak dapat dibatalkan.');
         }
 
-        $payment->update(['status' => 'failed']);
+        $payment->update(['status' => Payment::STATUS_FAILED]);
         $payment->booking->update(['status' => 'cancelled']);
 
         return redirect()->route('dashboard')
@@ -107,6 +126,10 @@ class PaymentController extends Controller
             abort(404);
         }
 
+        if (!$payment->isPending()) {
+            return back()->with('error', 'Pembayaran sudah tidak pending.');
+        }
+
         $payment->markAsPaid();
 
         return redirect()->route('payment.status', $payment)
@@ -115,7 +138,7 @@ class PaymentController extends Controller
 
     public function verify(Payment $payment)
     {
-        if ($payment->status !== 'pending') {
+        if (!$payment->isPending()) {
             return back()->with('error', 'Pembayaran tidak dapat diverifikasi.');
         }
 
