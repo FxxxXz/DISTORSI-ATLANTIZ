@@ -36,7 +36,7 @@
                             {{ auth()->user()->nama_lengkap }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{{ route('dashboard') }}">Pembayaran</a></li>
                             @if(auth()->user()->isAdmin())
                                 <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin Panel</a></li>
                             @endif

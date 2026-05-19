@@ -32,6 +32,10 @@ class Booking extends Model
     ];
 
     // ========== SCOPES ==========
+    public function payment(): \Illuminate\Database\Eloquent\Relations\HasOne
+{
+    return $this->hasOne(Payment::class);
+}
     public function scopePending($query)
     {
         return $query->where('status', 'pending');

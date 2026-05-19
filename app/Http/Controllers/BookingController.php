@@ -29,14 +29,15 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'studio_id' => 'required|exists:studios,id',
-            'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'durasi' => 'required|integer|min:1|max:8',
-            'jumlah_orang' => 'required|integer|min:1|max:20',
-            'catatan' => 'nullable|string',
-        ]);
+        'nama_lengkap' => 'required|string|max:255',
+        'telepon' => 'required|string|regex:/^[0-9]+$/|min:10|max:15', // <-- TAMBAH INI
+        'studio_id' => 'required|exists:studios,id',
+        'tanggal' => 'required|date',
+        'jam_mulai' => 'required',
+        'durasi' => 'required|integer|min:1|max:8',
+        'jumlah_orang' => 'required|integer|min:1|max:20',
+        'catatan' => 'nullable|string',
+    ]);
 
         // Hitung jam selesai
         $jamMulai = $request->jam_mulai;

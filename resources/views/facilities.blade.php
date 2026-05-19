@@ -13,6 +13,40 @@
     background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url("{{ asset('img/background.png') }}") center/cover no-repeat;
 }
 
+/* ================= PHONE VALIDATION ALERT ================= */
+.phone-error {
+    color: #ff4d4d;
+    font-size: 12px;
+    margin-top: 6px;
+    display: none;
+    align-items: center;
+    gap: 5px;
+    animation: shakeError 0.3s ease;
+}
+
+.phone-error.show {
+    display: flex;
+}
+
+.phone-error i {
+    font-size: 14px;
+}
+
+.phone-input-wrapper {
+    position: relative;
+}
+
+.phone-input-wrapper input.is-invalid-phone {
+    border-color: #ff4d4d !important;
+    box-shadow: 0 0 0 4px rgba(255, 77, 77, 0.15) !important;
+}
+
+@keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
 .page-subtitle {
     font-size: 14px;
     letter-spacing: 3px;
@@ -530,18 +564,25 @@
        required>
 </div>
                             <div class="col-md-6">
-                                <label class="form-label">Nomor Telepon</label>
-                                <input type="tel" 
-           class="form-control" 
-           id="telepon" 
-           pattern="[0-9]*" 
-           inputmode="numeric" 
-           placeholder="Contoh: 081234567890" 
-           autocomplete="off"
-           autocorrect="off"
-           autocapitalize="off"
-           spellcheck="false"
-           required>
+    <label class="form-label">Nomor Telepon</label>
+    <div class="phone-input-wrapper">
+        <input type="tel" 
+               class="form-control" 
+               id="telepon" 
+               name="telepon"
+               pattern="[0-9]*" 
+               inputmode="numeric" 
+               placeholder="Contoh: 081234567890" 
+               autocomplete="off"
+               autocorrect="off"
+               autocapitalize="off"
+               spellcheck="false"
+               required>
+        <div class="phone-error" id="phoneError">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>Hanya angka</span>
+        </div>
+    </div>
 </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
@@ -688,36 +729,82 @@ if (tanggalHariSelect) tanggalHariSelect.addEventListener("change", updateTangga
 
 /* ================= NOMOR TELEPON HANYA ANGKA ================= */
 const teleponInput = document.getElementById("telepon");
+const phoneError = document.getElementById("phoneError");
 
 if (teleponInput) {
-    // Hanya izinkan angka saat mengetik
+    // Validasi saat mengetik
     teleponInput.addEventListener("input", function(e) {
-        // Hapus semua karakter non-angka
-        this.value = this.value.replace(/[^0-9]/g, '');
+        const originalValue = this.value;
+        const cleanedValue = originalValue.replace(/[^0-9]/g, '');
+        
+        // Jika ada karakter non-angka yang dihapus
+        if (originalValue !== cleanedValue) {
+            this.value = cleanedValue;
+            showPhoneError();
+        } else {
+            hidePhoneError();
+        }
     });
 
-    // Cegah paste karakter non-angka
+    // Validasi saat paste
     teleponInput.addEventListener("paste", function(e) {
         e.preventDefault();
         const pasted = (e.clipboardData || window.clipboardData).getData("text");
         const cleaned = pasted.replace(/[^0-9]/g, '');
-        this.value = cleaned;
+        
+        if (pasted !== cleaned) {
+            showPhoneError();
+        }
+        
+        // Insert di posisi cursor
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        this.value = this.value.substring(0, start) + cleaned + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + cleaned.length;
     });
 
-    // Cegah tombol selain angka & navigasi
+    // Validasi saat keydown - cegah huruf masuk
     teleponInput.addEventListener("keydown", function(e) {
-        // Izinkan: backspace, delete, tab, escape, enter, arrow keys
-        const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+        // Izinkan: backspace, delete, tab, escape, enter, arrow keys, home, end
+        const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 
+                             'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+                             'Home', 'End'];
         if (allowedKeys.includes(e.key)) return;
 
-        // Izinkan: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-        if ((e.ctrlKey || e.metaKey) && ['a','c','v','x'].includes(e.key.toLowerCase())) return;
+        // Izinkan: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z
+        if ((e.ctrlKey || e.metaKey) && ['a','c','v','x','z'].includes(e.key.toLowerCase())) return;
 
-        // Cegal jika bukan angka
+        // Cegah jika bukan angka
         if (!/^[0-9]$/.test(e.key)) {
             e.preventDefault();
+            showPhoneError();
         }
     });
+
+    // Sembunyikan error saat blur (fokus keluar)
+    teleponInput.addEventListener("blur", function() {
+        hidePhoneError();
+    });
+}
+
+function showPhoneError() {
+    if (phoneError) {
+        phoneError.classList.add("show");
+        teleponInput.classList.add("is-invalid-phone");
+        
+        // Auto hide setelah 2 detik
+        clearTimeout(window.phoneErrorTimeout);
+        window.phoneErrorTimeout = setTimeout(() => {
+            hidePhoneError();
+        }, 2000);
+    }
+}
+
+function hidePhoneError() {
+    if (phoneError) {
+        phoneError.classList.remove("show");
+        teleponInput.classList.remove("is-invalid-phone");
+    }
 }
 
 /* ================= PRICE CALCULATION ================= */
@@ -811,6 +898,7 @@ if (bookingForm) {
     const formData = {
       user_id: parseInt(userId.value),
       nama_lengkap: document.getElementById("nama").value,
+      telepon: document.getElementById("telepon").value, // <-- TAMBAH INI
       studio_id: parseInt(studioSelect.value),
       tanggal: document.getElementById("tanggal").value,
       jam_mulai: jamMulai,

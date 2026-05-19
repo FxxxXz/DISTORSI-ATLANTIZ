@@ -695,3 +695,52 @@ html {
 body {
     -webkit-overflow-scrolling: touch;
 }
+
+/* Warna dasar sesuai login box */
+body {
+    background: #0a0a0a !important;
+    color: #ffffff;
+}
+
+/* Override Bootstrap card */
+.card {
+    border-radius: 0.75rem;
+}
+
+/* Form control dark */
+.form-control {
+    border-radius: 0.5rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+    border-color: #ff4444;
+}
+
+/* Button hover effects */
+.btn[style*="background: #ff4444"]:hover {
+    background: #e63939 !important;
+    color: #fff;
+}
+
+/* Smooth transitions */
+.card,
+.btn,
+.form-control {
+    transition: all 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #ff4444;
+}
